@@ -39,11 +39,17 @@ public class JWTUtil {
 		return extractClaim(token,Claims::getExpiration);
 	}
 
-	private <T> T extractClaim(String token, Function<Claims,T> object) {
+	private <T> T extractClaim(String token, Function<Claims,T> claimsResolver) {
 		// TODO Auto-generated method stub
-		return null;
+		final Claims claims = extractAllClaims(token);
+		return claimsResolver.apply(claims);
 	}
 	
+	private Claims extractAllClaims(String token) {
+		// TODO Auto-generated method stub
+		return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+	}
+
 	private boolean isTokenExpired(String token) {
 		return extractExpiration(token).before(new Date());
 		
