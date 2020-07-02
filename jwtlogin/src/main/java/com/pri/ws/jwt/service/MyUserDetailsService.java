@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.pri.ws.impl.UserRepository;
 import com.pri.ws.jwt.model.MyUserDetails;
 import com.pri.ws.jwt.model.User;
+
 @Service
 public class MyUserDetailsService implements UserDetailsService{
 
@@ -26,8 +27,11 @@ public class MyUserDetailsService implements UserDetailsService{
 		
 		user.orElseThrow(()-> new UsernameNotFoundException("Not Found: "+username));
 		
+		System.out.println(user.get().getUserName()+" ----------DEBUG------- "+user.get().getPassword());
+		
 		return user.map(MyUserDetails::new).get();
 		//return new User("foo","foo",new ArrayList<>());
 	}
 
 }
+

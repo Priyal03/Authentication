@@ -2,6 +2,7 @@ package com.pri.ws.jwt.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,44 +16,35 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pri.ws.JWTUtil;
 import com.pri.ws.jwt.model.AuthenticationRequest;
-import com.pri.ws.jwt.model.AuthenticationResponse;
-import com.pri.ws.jwt.service.MyUserDetailsService;
+import com.pri.ws.jwt.service.UserDetailsServiceImpl;
 
 @RestController
-public class HelloController {
+public class TestRestAPIs {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
 	@Autowired
-	private MyUserDetailsService myUserdetails;
+	private UserDetailsServiceImpl myUserdetails;
 	
 	@Autowired
 	private JWTUtil jwtUtil;
 
-	@GetMapping("/hello")
-	public String hello() {
-		// TODO Auto-generated method stub
-		return "todo yey!!";
+	@GetMapping("/api/test/user")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public String userAccess() {
+	  return ">>> User Contents!";
 	}
-	
-	@RequestMapping(value="/authenticate", method=RequestMethod.POST)
-	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest request) throws Exception {
-		
-		
-		try {
-			authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-		}catch(BadCredentialsException e) {
-			throw new Exception("Username or Password is incorrect!");
-		}
-		System.out.println("     COMING HERE !!!!!!@@@@@#####");
-		final UserDetails userDetails=myUserdetails.loadUserByUsername(request.getUsername());
-		
-		final String jwt = jwtUtil.generateToken(userDetails);
-		
-		return ResponseEntity.ok(new AuthenticationResponse(jwt));
+	 
+	@GetMapping("/api/test/pm")
+	@PreAuthorize("hasRole('PM') or hasRole('ADMIN')")
+	public String projectManagementAccess() {
+	  return ">>> Board Management Project";
 	}
-	
-	
+	 
+	@GetMapping("/api/test/admin")
+	@PreAuthorize("hasRole('ADMIN')")
+	public String adminAccess() {
+	  return ">>> Admin Contents";
+	}
 }

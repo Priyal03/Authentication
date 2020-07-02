@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.pri.ws.jwt.service.MyUserDetailsService;
 
-//@Configuration
+@Configuration
 @EnableWebSecurity
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter{
 
@@ -42,12 +42,20 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter{
 //		http.authorizeRequests()
 //		.antMatchers("/admin").hasRole("ADMIN")
 //		.antMatchers("/user").hasAnyRole("ADMIN","USER")
-//		.antMatchers("/").permitAll()
-//		.and().formLogin();
+//		.antMatchers("/").permitAll();
+		//.and().formLogin();
 		
 		http.csrf().disable().authorizeRequests().antMatchers("/authenticate").permitAll()
 		.anyRequest().authenticated()//.antMatchers(HttpMethod.GET,"/").permitAll()
 		.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		
+//		http.cors().and().csrf().disable().
+//        authorizeRequests()
+//        .antMatchers("/api/auth/**").permitAll()
+//        .anyRequest().authenticated()
+//        .and()
+//        .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+//        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		
 		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
 	}
